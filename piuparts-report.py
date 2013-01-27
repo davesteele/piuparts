@@ -401,6 +401,7 @@ class Config(piupartslib.conf.Config):
                 "sections": "report",
                 "output-directory": "html",
                 "master-directory": ".",
+                "known-problem-directory": "/usr/share/piuparts/known_problems",
                 "depends-sections": None,
                 "description": "",
                 "proxy": None,
@@ -575,7 +576,7 @@ def get_email_address(maintainer):
 
 class Section:
 
-    def __init__(self, section, master_directory, doc_root, packagedb_cache={}):
+    def __init__(self, section, master_directory, doc_root, problem_list, packagedb_cache={}):
         self._config = Config(section=section, defaults_section="global")
         self._config.read(CONFIG_FILE)
         self._distro_config = piupartslib.conf.DistroConfig(
@@ -591,6 +592,7 @@ class Section:
             os.makedirs(self._section_directory)
 
         self._doc_root = doc_root
+        self._problem_list = problem_list
 
         logging.debug("Loading and parsing Packages file")
         oldcwd = os.getcwd()
@@ -1036,10 +1038,8 @@ class Section:
     def create_package_templates(self):
         logging.debug("Creating package templates in %s" % self._config.section)
 
-        problem_list = piupartslib.known_problems.create_problem_list()
-
         piupartslib.known_problems.process_section( self._config.section,
-                                   self._config, problem_list,
+                                   self._config, self._problem_list,
                                    pkgsdb=self._binary_db )
 
     def create_package_summaries(self, logs_by_dir):
@@ -1369,11 +1369,15 @@ def main():
     if doc_root.endswith("/"):
         doc_root = doc_root[:-1]
 
+    problemdir = global_config["known-problem-directory"]
+    problem_list = piupartslib.known_problems.create_problem_list(problemdir)
+    problem_list.sort( key=lambda x: int(x.PRIORITY) )
+
     if os.path.exists(master_directory):
         packagedb_cache = {}
         for section_name in section_names:
           try:
-            section = Section(section_name, master_directory, doc_root, packagedb_cache=packagedb_cache)
+            section = Section(section_name, master_directory, doc_root, problem_list, packagedb_cache=packagedb_cache)
           except MissingSection as e:
             logging.error("Configuration Error in section '%s': %s" % (section_name, e))
           else:
