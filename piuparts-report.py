@@ -340,58 +340,6 @@ state_by_dir = {
     "untestable": "cannot-be-tested",
 }
 
-# better use XX_name.tpl and get the linktarget from the template
-# (its a substring of the <title> of the that template
-# maintaining this list is errorprone and tiresome
-linktarget_by_template = [
-    ("initdscript_lsb_header_issue.tpl", "but logfile contains update-rc.d issues"),
-    ("command_not_found_issue.tpl", "but logfile contains 'command not found'"),
-    ("debsums_mismatch_issue.tpl", "but logfile contains modified conffiles or other shipped files"),
-    ("alternatives_after_purge_issue.tpl", "but logfile contains forgotten alternatives"),
-    ("owned_files_after_purge_issue.tpl", "but logfile contains owned files existing after purge"),
-    ("unowned_files_after_purge_issue.tpl", "but logfile contains unowned files after purge"),
-    ("maintainer_script_issue.tpl", "but logfile contains maintainer script failures"),
-    ("db_setup_issue.tpl", "but logfile contains failure to setup a database"),
-    ("installs_over_symlink_issue.tpl", "but package installs something over existing symlinks"),
-    ("broken_symlinks_issue.tpl", "but logfile contains 'broken symlinks'"),
-    ("packages_have_been_kept_back_issue.tpl", "but logfile contains 'packages have been kept back'"),
-    ("needs_rebuild_issue.tpl", "but logfile recommends to rebuild some packages"),
-    ("obsolete_conffiles_issue.tpl", "but logfile reports obsolete conffiles"),
-
-    ("dependency_error.tpl", "due to unsatisfied dependencies"),
-    ("packages_have_been_kept_back_error.tpl", "...and logfile also contains 'packages have been kept back'"),
-    ("command_not_found_error.tpl", "due to a 'command not found' error"),
-    ("files_in_usr_local_error.tpl", "due to files in /usr/local"),
-    ("overwrite_other_packages_files_error.tpl", "due to overwriting other packages files"),
-    ("debsums_mismatch_error.tpl", "due to modifying conffiles or other shipped files"),
-    ("alternatives_after_purge_error.tpl", "due to forgotten alternatives after purge"),
-    ("owned_files_by_many_packages_error.tpl", "due to owned files by many packages"),
-    ("owned_files_after_purge_error.tpl", "due to owned files existing after purge"),
-    ("unowned_files_after_purge_error.tpl", "due to unowned files after purge"),
-    ("modified_files_after_purge_error.tpl", "due to files having been modified after purge"),
-    ("disappeared_files_after_purge_error.tpl", "due to files having disappeared after purge"),
-    ("diversion_error.tpl", "due to diversions being modified after purge"),
-    ("processes_running_error.tpl", "due to leaving processes running behind"),
-    ("resource_violation_error.tpl", "due to resource violation"),
-    ("conffile_prompt_error.tpl", "due to prompting due to modified conffiles"),
-    ("db_setup_error.tpl", "due to failing to setup a database"),
-    ("insserv_error.tpl", "due to a problem with insserv"),
-    ("problems_and_no_force_error.tpl", "due to not enough force being used"),
-    ("pre_depends_error.tpl", "due to a problem with pre-depends"),
-    ("pre_installation_script_error.tpl", "due to pre-installation maintainer script failed"),
-    ("post_installation_script_error.tpl", "due to post-installation maintainer script failed"),
-    ("pre_removal_script_error.tpl", "due to pre-removal maintainer script failed"),
-    ("post_removal_script_error.tpl", "due to post-removal maintainer script failed"),
-    ("unknown_purge_error.tpl", "due to purge failed due to an unknown reason"),
-    ("cron_error_after_removal_error.tpl", "due to errors from cronjob after removal"),
-    ("logrotate_error_after_removal_error.tpl", "due to errors from logrotate after removal"),
-    ("installs_over_symlink_error.tpl", "...and package installs something over existing symlinks"),
-    ("broken_symlinks_error.tpl", "...and logfile also contains 'broken symlinks'"),
-    ("obsolete_conffiles_error.tpl", "...and logfile reports obsolete conffiles"),
-    ("unknown_failures.tpl", "due to unclassified failures"),
-]
-
-
 class Config(piupartslib.conf.Config):
 
     def __init__(self, section="report", defaults_section=None):
@@ -1101,13 +1049,13 @@ class Section:
 
     def create_and_link_to_analysises(self,state):
         link="<ul>"
-        for template, linktarget in linktarget_by_template:
+        for problem in self._problem_list:
           # sucessful logs only have issues and failed logs only have errors
-          if (state == "failed-testing" and template[-9:] != "issue.tpl") \
-              or (state == "successfully-tested" and template[-9:] == "issue.tpl"):
+          if (state == "failed-testing" and problem.short_name[-5:] != "issue") \
+              or (state == "successfully-tested" and problem.short_name[-5:] == "issue"):
             substats = ""
 
-            tpl = os.path.join(self._output_directory, template)
+            tpl = os.path.join(self._output_directory, problem.short_name + ".tpl")
             try:
               f = file(tpl, "r")
               rows = file.read(f)
@@ -1115,10 +1063,10 @@ class Section:
               os.unlink(tpl)
 
               htmlpage = string.Template(HTML_HEADER + ANALYSIS_BODY_TEMPLATE + HTML_FOOTER)
-              filename = os.path.join(self._output_directory, template[:-len(".tpl")]+".html")
+              filename = os.path.join(self._output_directory, problem.short_name+".html")
               f = file(filename, "w")
               f.write(htmlpage.safe_substitute( {
-                 "page_title": html_protect("Packages in state "+state+" "+linktarget),
+                 "page_title": html_protect("Packages in state "+state+" "+problem.EXPLAIN),
                  "section_navigation": create_section_navigation(self._section_names,self._config.section,self._doc_root),
                  "time": time.strftime("%Y-%m-%d %H:%M %Z"),
                  "rows": rows,
@@ -1144,12 +1092,12 @@ class Section:
                     substats += ": %s passed" % count_passed
               link += "<li><a href=%s>%s</a>%s</li>\n" % \
                        (
-                           template[:-len(".tpl")]+".html",
-                           linktarget,
+                           problem.short_name+".html",
+                           problem.EXPLAIN,
                            substats,
                        )
             except:
-              logging.debug("analysis template %s does not exist." % template)
+              logging.debug("analysis template %s.tpl does not exist." % problem.short_name)
 
         link += "</ul>"
         if link == "<ul></ul>":

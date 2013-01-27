@@ -112,9 +112,8 @@ class Problem():
         self.tags_are_valid = True
 
         self.required_tags = [ "PATTERN", "WHERE", "ISSUE",
-                               "HEADER", "HELPTEXT"]
-        self.optional_tags = ["EXCLUDE_PATTERN", "EXPLAIN", "PRIORITY"]
-
+                               "HEADER", "HELPTEXT", "EXPLAIN", "PRIORITY"]
+        self.optional_tags = ["EXCLUDE_PATTERN"]
 
         self.init_problem()
 

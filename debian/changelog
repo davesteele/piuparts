@@ -61,6 +61,7 @@ piuparts (0.51) UNRELEASED; urgency=low
   * piuparts-report
     - Use the new piupartslib known_problems module to calculate known_problem
       '.kpr' and '.tpl' files from piuparts-report.
+    - Remove linktarget_by_template array. Replace with Problem class info.
   * detect_well_known_errors:
     - Replace the bash script with an equivalent Python script.
     - Sort known error and issue packages by reverse dependency count,
