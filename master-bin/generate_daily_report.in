@@ -71,10 +71,6 @@ done | sed s#^$MASTER#$URLBASE# >> $DAILYREPORT
 
 echo "" >> $DAILYREPORT
 date >> $DAILYREPORT
-@sharedir@/piuparts/master/detect_well_known_errors 2>&1 >> $DAILYREPORT
-
-echo "" >> $DAILYREPORT
-date >> $DAILYREPORT
 nice \
 	@sharedir@/piuparts/piuparts-report \
 	>> $DAILYREPORT 2>&1

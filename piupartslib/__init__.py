@@ -25,6 +25,7 @@ import cStringIO
 import conf
 import dependencyparser
 import packagesdb
+import known_problems
 
 
 def open_packages_url(url):

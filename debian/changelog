@@ -58,6 +58,9 @@ piuparts (0.51) UNRELEASED; urgency=low
   * New known problem: Database setup failure (issue).
 
   [ David Steele ]
+  * piuparts-report
+    - Use the new piupartslib known_problems module to calculate known_problem
+      '.kpr' and '.tpl' files from piuparts-report.
   * detect_well_known_errors:
     - Replace the bash script with an equivalent Python script.
     - Sort known error and issue packages by reverse dependency count,
@@ -70,6 +73,7 @@ piuparts (0.51) UNRELEASED; urgency=low
     - Validate field names, and only use valid known problem conf files.
     - Minor HTML syntax fix.
     - Minor template integration.
+    - Move to piupartslib, to be used as the known_problems module.
 
   [ Holger Levsen ]
   * piuparts.py:

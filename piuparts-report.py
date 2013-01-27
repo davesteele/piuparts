@@ -1033,6 +1033,14 @@ class Section:
 
         return sourcerows, binaryrows, source_state, maintainer, uploaders
 
+    def create_package_templates(self):
+        logging.debug("Creating package templates in %s" % self._config.section)
+
+        problem_list = piupartslib.known_problems.create_problem_list()
+
+        piupartslib.known_problems.process_section( self._config.section,
+                                   self._config, problem_list,
+                                   pkgsdb=self._binary_db )
 
     def create_package_summaries(self, logs_by_dir):
         logging.debug("Writing source summaries in %s" % self._config.section)
@@ -1313,6 +1321,8 @@ class Section:
         self.print_by_dir(self._output_directory, logs_by_dir)
 
         total_packages = self.write_counts_summary()
+
+        self.create_package_templates()
 
         self.create_package_summaries(logs_by_dir)
 
