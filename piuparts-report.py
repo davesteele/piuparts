@@ -35,6 +35,7 @@ import urllib
 import shutil
 import re
 import string
+from collections import namedtuple
 
 # if python-rpy ain't installed, we don't draw fancy graphs
 try:
@@ -1049,7 +1050,9 @@ class Section:
 
     def create_and_link_to_analysises(self,state):
         link="<ul>"
-        for problem in self._problem_list:
+        for problem in self._problem_list\
+            + [namedtuple('Problem', 'short_name EXPLAIN')\
+                        ('unknown_failures', "due to unclassified failures")]:
           # sucessful logs only have issues and failed logs only have errors
           if (state == "failed-testing" and problem.short_name[-5:] != "issue") \
               or (state == "successfully-tested" and problem.short_name[-5:] == "issue"):
