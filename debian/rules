@@ -3,19 +3,90 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+sharedir ?= /usr/share/piuparts
+
 %:
 	dh $@ --with python2
 
+# man pages and html documentation are built from asciidoc sources
+GENERATED_HTML = $(shell grep -h '\.html$$' debian/*.docs debian/*.manpages)
+GENERATED_MAN1 = $(shell grep -h '\.1$$' debian/*.docs debian/*.manpages)
+GENERATED_MAN8 = $(shell grep -h '\.8$$' debian/*.docs debian/*.manpages)
+GENERATED_DOCS = $(GENERATED_HTML) $(GENERATED_MAN1) $(GENERATED_MAN8)
 
-override_dh_auto_build:
-	$(MAKE) prefix=/usr build build-doc
+$(GENERATED_HTML): %.html: %.txt
+	a2x --copy -a toc -a toclevels=3 -f xhtml -r /etc/asciidoc/ $<
+
+$(GENERATED_MAN1) $(GENERATED_MAN8): %: %.txt
+	a2x --copy -a toc -a toclevels=3 -f manpage -r /etc/asciidoc/ $@.txt
+
+# variable substitution in scripts and conf files
+SCRIPTS_TEMPLATES           = $(wildcard *.in master-bin/*.in slave-bin/*.in)
+SCRIPTS_TEMPLATES_GENERATED = $(SCRIPTS_TEMPLATES:.in=)
+
+CONF_TEMPLATES              = $(wildcard conf/*.in)
+CONF_TEMPLATES_GENERATED    = $(CONF_TEMPLATES:.in=)
+
+SCRIPTS_PYTHON_BINARY       = $(wildcard *.py master-bin/*.py slave-bin/*.py)
+SCRIPTS_PYTHON_GENERATED    = $(SCRIPTS_PYTHON_BINARY:.py=)
+
+FILES_GENERATED             = $(SCRIPTS_PYTHON_GENERATED) $(CONF_TEMPLATES_GENERATED) $(SCRIPTS_TEMPLATES_GENERATED) $(GENERATED_DOCS)
+
+distribution=${shell dpkg-parsechangelog | sed -n 's/^Distribution: *//p'}
+ifeq ($(distribution),UNRELEASED)
+version         := ${shell echo "`dpkg-parsechangelog | sed -n 's/^Version: *//p'`~`date +%Y%m%d%H%M`~`git describe --dirty`"}
+else
+version         := ${shell dpkg-parsechangelog | sed -n 's/^Version: *//p'}
+endif
+
+
+define placeholder_substitution
+        sed -r \
+        -e 's/__PIUPARTS_VERSION__/$(version)/g' \
+        -e 's%@sharedir@%$(sharedir)%g' \
+        $< > $@
+endef
+
+
+$(CONF_TEMPLATES_GENERATED): %: %.in
+	$(placeholder_substitution)
+
+$(SCRIPTS_TEMPLATES_GENERATED): %: %.in
+	$(placeholder_substitution)
+	chmod 0755 $@
+
+$(SCRIPTS_PYTHON_GENERATED): %: %.py
+	$(placeholder_substitution)
+	chmod 0755 $@
+
+# start overrides
 
 override_dh_auto_test:
 	echo "unittests are disabled as they haven't been run at build time since years and thus are broken..."
 
-override_dh_auto_install:
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp prefix=/usr etcdir=/etc install install-doc install-conf
+override_dh_install: $(FILES_GENERATED)
+	cp conf/crontab-master conf/piuparts-master
+	cp conf/crontab-slave conf/piuparts-slave
+	cp conf/piuparts.conf.sample conf/piuparts.conf
+	cp conf/piuparts.sudoers conf/piuparts
+	dh_install
+
+
+install:
 
 override_dh_python2:
 	dh_python2 -p piuparts-master -p piuparts-slave /usr/share/piuparts
 	dh_python2 -N piuparts-master -N piuparts-slave
+
+override_dh_clean:
+	rm -f conf/piuparts-master
+	rm -f conf/piuparts-slave
+	rm -f conf/piuparts.conf
+	rm -f conf/piuparts
+	rm -f $(FILES_GENERATED)
+	rm -f docbook-xsl.css
+	dh_clean
+
+build-arch:
+
+build-indep:

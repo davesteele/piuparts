@@ -1,5 +1,10 @@
-etc/cron.d/piuparts-slave
-etc/piuparts/piuparts.conf
-etc/sudoers.d/piuparts
-usr/share/piuparts/piuparts-slave
-usr/share/piuparts/slave/*
+conf/piuparts-slave etc/cron.d/
+conf/piuparts.conf /etc/piuparts/
+conf/piuparts /etc/sudoers.d/
+piuparts-slave usr/share/piuparts/
+slave-bin/detect_leftover_processes /usr/share/piuparts/slave/
+slave-bin/detect_slave_problems /usr/share/piuparts/slave/
+slave-bin/detect_tmp_cruft /usr/share/piuparts/slave/
+slave-bin/slave_cleanup /usr/share/piuparts/slave/
+slave-bin/slave_join /usr/share/piuparts/slave/
+slave-bin/slave_run /usr/share/piuparts/slave/

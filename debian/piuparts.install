@@ -1,2 +1,2 @@
-/usr/sbin/piuparts
-/etc/piuparts/scripts*
+piuparts /usr/sbin/
+custom-scripts/* /etc/piuparts/

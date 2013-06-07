@@ -66,14 +66,16 @@ fi
 #
 # install everything from GIT into PIUPARTS_PREFIX
 #
-make clean
-make		prefix=$PIUPARTS_PREFIX \
+make -f debian/rules clean
+make -f debian/rules \
+ 		prefix=$PIUPARTS_PREFIX \
 		build build-doc
-make	prefix=$PIUPARTS_PREFIX \
+make -f debian/rules
+		prefix=$PIUPARTS_PREFIX \
 		docdir=$PIUPARTS_HTDOCS/doc \
 		htdocsdir=$PIUPARTS_HTDOCS \
 		install install-doc install-conf-4-running-from-git
-make clean
+make -f debian/rules clean
 
 #
 # update $PIUPARTS_PREFIX

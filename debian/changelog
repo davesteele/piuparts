@@ -43,6 +43,8 @@ piuparts (0.53) UNRELEASED; urgency=low
   * Update python Requires to 2.7 (for argparse)
   * Edit piuparts_slave_* man pages for more information and format.
   * Specify the manpage doctype for AsciiDoc man sources.
+  * Remove the 'rules' dependency on 'Makefile', remove 'Makefile', and
+    perform cleanup on the debhelper build process:
 
   [ Holger Levsen ]
   * piuparts.1.txt, README.txt and README_pejacevic.txt: proof-read and
