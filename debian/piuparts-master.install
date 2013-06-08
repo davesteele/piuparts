@@ -1,5 +1,5 @@
 conf/piuparts.apache /etc/apache2/conf.d/
-conf/piuparts-master /etc/cron.d/
+conf/cron/piuparts-master /etc/cron.d/
 htdocs/*.* /usr/share/piuparts/htdocs/
 htdocs/images/*.* /usr/share/piuparts/htdocs/images
 bug-templates/*.mail /usr/share/piuparts/htdocs/templates/mail/

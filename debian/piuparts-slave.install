@@ -1,4 +1,4 @@
-conf/piuparts-slave etc/cron.d/
+conf/cron/piuparts-slave etc/cron.d/
 conf/piuparts.conf /etc/piuparts/
 conf/piuparts /etc/sudoers.d/
 piuparts-slave usr/share/piuparts/

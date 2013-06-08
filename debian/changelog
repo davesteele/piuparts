@@ -48,6 +48,8 @@ piuparts (0.53) UNRELEASED; urgency=low
     - Reduce the number of master bin files defined in piuparts-master.install
       by removing ".in" and ".py" files after the install step.
     - Do the samefor piuparts-slave.install
+    - Move the source cron files to a cron directory, so that they can
+      have the generic-sounding 'piuparts-*' names without confusion.
 
   [ Holger Levsen ]
   * piuparts.1.txt, README.txt and README_pejacevic.txt: proof-read and

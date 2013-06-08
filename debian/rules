@@ -24,7 +24,7 @@ $(GENERATED_MAN1) $(GENERATED_MAN8): %: %.txt
 SCRIPTS_TEMPLATES           = $(wildcard *.in master-bin/*.in slave-bin/*.in)
 SCRIPTS_TEMPLATES_GENERATED = $(SCRIPTS_TEMPLATES:.in=)
 
-CONF_TEMPLATES              = $(wildcard conf/*.in)
+CONF_TEMPLATES              = $(wildcard conf/*.in conf/cron/*.in)
 CONF_TEMPLATES_GENERATED    = $(CONF_TEMPLATES:.in=)
 
 SCRIPTS_PYTHON_BINARY       = $(wildcard *.py master-bin/*.py slave-bin/*.py)
@@ -65,8 +65,6 @@ override_dh_auto_test:
 	echo "unittests are disabled as they haven't been run at build time since years and thus are broken..."
 
 override_dh_install: $(FILES_GENERATED)
-	cp conf/crontab-master conf/piuparts-master
-	cp conf/crontab-slave conf/piuparts-slave
 	cp conf/piuparts.conf.sample conf/piuparts.conf
 	cp conf/piuparts.sudoers conf/piuparts
 	dh_install
@@ -80,8 +78,6 @@ override_dh_python2:
 	dh_python2 -N piuparts-master -N piuparts-slave
 
 override_dh_clean:
-	rm -f conf/piuparts-master
-	rm -f conf/piuparts-slave
 	rm -f conf/piuparts.conf
 	rm -f conf/piuparts
 	rm -f $(FILES_GENERATED)
