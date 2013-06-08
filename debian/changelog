@@ -52,6 +52,7 @@ piuparts (0.53) UNRELEASED; urgency=low
       have the generic-sounding 'piuparts-*' names without confusion.
     - Rename the source piuparts.conf.sample to piuparts.conf, to avoid
       installation renaming issues.
+    - Rename the source sudoers file to 'piuparts', and move to a suders dir.
 
   [ Holger Levsen ]
   * piuparts.1.txt, README.txt and README_pejacevic.txt: proof-read and
