@@ -45,6 +45,8 @@ piuparts (0.53) UNRELEASED; urgency=low
   * Specify the manpage doctype for AsciiDoc man sources.
   * Remove the 'rules' dependency on 'Makefile', remove 'Makefile', and
     perform cleanup on the debhelper build process:
+    - Reduce the number of master bin files defined in piuparts-master.install
+      by removing ".in" and ".py" files after the install step.
 
   [ Holger Levsen ]
   * piuparts.1.txt, README.txt and README_pejacevic.txt: proof-read and

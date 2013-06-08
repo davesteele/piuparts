@@ -70,9 +70,9 @@ override_dh_install: $(FILES_GENERATED)
 	cp conf/piuparts.conf.sample conf/piuparts.conf
 	cp conf/piuparts.sudoers conf/piuparts
 	dh_install
+	rm -f debian/piuparts-master/usr/share/piuparts/master/*.in
+	rm -f debian/piuparts-master/usr/share/piuparts/master/*.py
 
-
-install:
 
 override_dh_python2:
 	dh_python2 -p piuparts-master -p piuparts-slave /usr/share/piuparts
