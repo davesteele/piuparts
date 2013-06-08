@@ -50,6 +50,8 @@ piuparts (0.53) UNRELEASED; urgency=low
     - Do the samefor piuparts-slave.install
     - Move the source cron files to a cron directory, so that they can
       have the generic-sounding 'piuparts-*' names without confusion.
+    - Rename the source piuparts.conf.sample to piuparts.conf, to avoid
+      installation renaming issues.
 
   [ Holger Levsen ]
   * piuparts.1.txt, README.txt and README_pejacevic.txt: proof-read and

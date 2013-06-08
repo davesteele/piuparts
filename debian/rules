@@ -65,7 +65,6 @@ override_dh_auto_test:
 	echo "unittests are disabled as they haven't been run at build time since years and thus are broken..."
 
 override_dh_install: $(FILES_GENERATED)
-	cp conf/piuparts.conf.sample conf/piuparts.conf
 	cp conf/piuparts.sudoers conf/piuparts
 	dh_install
 	rm -f debian/piuparts-master/usr/share/piuparts/master/*.in
@@ -78,7 +77,6 @@ override_dh_python2:
 	dh_python2 -N piuparts-master -N piuparts-slave
 
 override_dh_clean:
-	rm -f conf/piuparts.conf
 	rm -f conf/piuparts
 	rm -f $(FILES_GENERATED)
 	rm -f docbook-xsl.css
