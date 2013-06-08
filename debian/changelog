@@ -47,6 +47,7 @@ piuparts (0.53) UNRELEASED; urgency=low
     perform cleanup on the debhelper build process:
     - Reduce the number of master bin files defined in piuparts-master.install
       by removing ".in" and ".py" files after the install step.
+    - Do the samefor piuparts-slave.install
 
   [ Holger Levsen ]
   * piuparts.1.txt, README.txt and README_pejacevic.txt: proof-read and
